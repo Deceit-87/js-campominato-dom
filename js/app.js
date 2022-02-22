@@ -1,6 +1,7 @@
 const GRID_EL = document.getElementById('grid');
 const PLAY_BUTTON = document.getElementById('play-btn');
 const SELECT = document.getElementById('difficult-level');
+const playerMessage = document.querySelector('.message')
 
 // let rows;
 // let cols; 
@@ -13,9 +14,10 @@ const SELECT = document.getElementById('difficult-level');
 
 
 PLAY_BUTTON.addEventListener('click',() =>{
-let rows, cols, cellSize,bombs;
-
+let rows, cols, cellSize,bombs , score = 0;
+const cells = []
 const DIFFICULT = SELECT.value;
+
 switch ( DIFFICULT ) {
 
     // case 'Easy':
@@ -54,9 +56,16 @@ const callBack =function (){
     const element =this;
     if (isBomb(this.innerHTML , bombs)){
         element.classList.add('bomb')
+       
+        gameOver(score,cells);
+        GRID_EL.removeEventListener('click',callBack);
     }
     else{
         element.classList.add('selected');
+        score++
+        if( score === CELL_NUMBERS - bombs.length){
+            youWin(score,cells)
+        }
     }
 
     this.classList.add('selected');
@@ -78,11 +87,47 @@ const callBack =function (){
         
         GRID_EL.appendChild(CELL);
        
-    
+        cells.push(CELL)
         console.log(CELL)
+         
         CELL.addEventListener('click',callBack)
     }
     
+    function isBomb( num , bombs ){
+        if (bombs.includes( parseInt( num ) ) ){
+            return true
+        }
+        else {
+            return false
+        }
+    }
+    
+    
+    function gameOver(score,arrayCells){
+    
+        playerMessage.innerHTML = `hai perso! il tuo punteggio è di ${ score } punti.`
+        resetCells(arrayCells)
+    
+    }
+    function youWin(score,arrayCells){
+    
+        playerMessage.innerHTML = `hai vinto! il tuo punteggio è di ${ score } punti.`
+        resetCells(arrayCells)
+    
+    }
+    
+    function resetCells(arrayCells){
+    
+        for (let i = 0; i < arrayCells.length; i++) {
+            const cell = cells[i]
+            const num = parseInt( cell.innerHTML)
+            if(isBomb(num , bombs)){
+            cell.classList.add('bomb')
+            }
+            cell.removeEventListener('click',callBack)
+            
+        }
+    }
 
 })
 
@@ -102,14 +147,7 @@ return ARRAY_BOMBS;
 
 };
 
-function isBomb( num , bombs ){
-    if (bombs.includes( parseInt( num ) ) ){
-        return true
-    }
-    else {
-        return false
-    }
-}
+
 function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);

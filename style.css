@@ -61,3 +61,11 @@ border:4px solid #7472eb;
 color: rgb(255, 255, 255);
 
 }
+
+.bomb{
+
+    background-color: rgb(205, 6, 6);
+    border:4px dashed #f8e515;
+    color: rgb(255, 255, 255);
+    
+}
