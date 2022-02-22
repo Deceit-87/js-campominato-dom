@@ -5,10 +5,16 @@ const SELECT = document.getElementById('difficult-level');
 // let rows;
 // let cols; 
 // let cellSize;  
-let rows, cols, cellSize;
+
+
+                       // GENERAZIONE BOMBE
+
+
+
 
 PLAY_BUTTON.addEventListener('click',() =>{
-    
+let rows, cols, cellSize,bombs;
+
 const DIFFICULT = SELECT.value;
 switch ( DIFFICULT ) {
 
@@ -37,11 +43,26 @@ switch ( DIFFICULT ) {
  
     
 const CELL_NUMBERS = rows * cols;
+
 cellSize = `calc(100% / ${cols})`;
+
+bombs = generaBombe(16,1,CELL_NUMBERS)
+
 GRID_EL.innerHTML = '';
 const callBack =function (){
     console.log('mi hai clickato!');
-    this.classList.add('selected')
+    const element =this;
+    if (isBomb(this.innerHTML , bombs)){
+        element.classList.add('bomb')
+    }
+    else{
+        element.classList.add('selected');
+    }
+
+    this.classList.add('selected');
+    element.removeEventListener('click',callBack);
+
+   
 }
 
 
@@ -65,9 +86,40 @@ const callBack =function (){
 
 })
 
+function generaBombe(numBombs,min,max){
+
+const ARRAY_BOMBS = []
+ do{
+    const num =getRandomIntInclusive(min,max)
+    if(ARRAY_BOMBS.includes( num )  === false){
+
+    ARRAY_BOMBS.push(num);
+    }
+ }
+ while (ARRAY_BOMBS.length < numBombs)
+console.log(ARRAY_BOMBS)
+return ARRAY_BOMBS;
+
+};
+
+function isBomb( num , bombs ){
+    if (bombs.includes( parseInt( num ) ) ){
+        return true
+    }
+    else {
+        return false
+    }
+}
+function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min);  
+  }
 
 
-// Il computer deve generare 16 numeri casuali nello stesso range della difficoltà prescelta: le bombe.
+
+// Il computer deve generare 16 numeri casuali nello stesso range della difficoltà
+//  prescelta: le bombe.
 // I numeri nella lista delle bombe non possono essere duplicati.
 // In seguito l’utente clicca su una cella:
 // se il numero è presente nella lista dei numeri generati - abbiamo calpestato una bomba - 
@@ -90,6 +142,7 @@ const callBack =function (){
 
 
  
+
 
 
 
